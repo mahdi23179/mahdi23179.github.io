@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <script>
+            !function(e,t,n){e.yektanetAnalyticsObject=n,e[n]=e[n]||function(){e[n].q.push(arguments)},e[n].q=e[n].q||[];var a=t.getElementsByTagName("head")[0],r=new Date,c="https://cdn.yektanet.com/superscript/xkoD0fSO/native-kodbaz.pages.dev-46928/yn_pub.js?v="+r.getFullYear().toString()+"0"+r.getMonth()+"0"+r.getDate()+"0"+r.getHours(),s=t.createElement("link");s.rel="preload",s.as="script",s.href=c,a.appendChild(s);var l=t.createElement("script");l.async=!0,l.src=c,a.appendChild(l)}(window,document,"yektanet");
+        </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>کدباز - محیط توسعه</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.0/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <style>
+        :root {
+            /* Black Theme (Default) */
+            --bg-color: #000000;
+            --header-bg: #111111;
+            --text-color: #e0e0e0;
+            --border-color: #333333;
+            --line-num-bg: #0a0a0a;
+            --line-num-color: #666666;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --btn-bg: transparent;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --menu-bg: #1a1a1a;
+            --font-size: 15px;
+            --font-family: 'Vazirmatn', system-ui, Tahoma, sans-serif;
+            --code-color: #fca5a5;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --border-radius: 6px; /* کاهش گردی دکمه‌ها برای ظاهر جدی‌تر */
+        }
+        
+        .light-theme {
+            --bg-color: #ffffff;
+            --header-bg: #f3f4f6;
+            --text-color: #111827;
+            --border-color: #d1d5db;
+            --line-num-bg: #f9fafb;
+            --line-num-color: #9ca3af;
+            --accent-color: #2563eb;
+            --accent-hover: #1d4ed8;
+            --btn-hover: rgba(0, 0, 0, 0.08);
+            --menu-bg: #ffffff;
+            --code-color: #dc2626;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-green-theme {
+            --bg-color: #022c22;
+            --header-bg: #064e3b;
+            --text-color: #a7f3d0;
+            --border-color: #047857;
+            --line-num-bg: #022c22;
+            --line-num-color: #059669;
+            --accent-color: #10b981;
+            --accent-hover: #059669;
+            --btn-hover: rgba(16, 185, 129, 0.15);
+            --menu-bg: #064e3b;
+            --code-color: #fb923c;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .blue-theme {
+            --bg-color: #0a192f;
+            --header-bg: #020c1b;
+            --text-color: #ccd6f6;
+            --border-color: #233554;
+            --line-num-bg: #0a192f;
+            --line-num-color: #495670;
+            --accent-color: #64ffda;
+            --accent-hover: #1de9b6;
+            --btn-hover: rgba(100, 255, 218, 0.1);
+            --menu-bg: #112240;
+            --code-color: #ffb86c;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .red-theme {
+            --bg-color: #2b0909;
+            --header-bg: #1a0505;
+            --text-color: #fecaca;
+            --border-color: #7f1d1d;
+            --line-num-bg: #2b0909;
+            --line-num-color: #b91c1c;
+            --accent-color: #ef4444;
+            --accent-hover: #dc2626;
+            --btn-hover: rgba(239, 68, 68, 0.15);
+            --menu-bg: #3f0f0f;
+            --code-color: #fde047;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        * { box-sizing: border-box; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); font-family: var(--font-family); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        /* Splash Screen */
+        #splash { position: fixed; inset: 0; background-color: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
+        .logo-svg { width: 70px; height: 70px; color: var(--accent-color); }
+        #splash h2 { margin: 20px 0 30px; font-weight: 700; color: var(--text-color); font-size: 22px; }
+        #retry-btn { display: none; padding: 12px 30px; background: var(--accent-color); color: #fff; border: none; border-radius: var(--border-radius); font-size: 15px; font-weight: bold; cursor: pointer; font-family: inherit; }
+
+        /* Top Bar - Flat and Standard */
+        header { height: 60px; background: var(--header-bg); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; flex-shrink: 0; z-index: 100; }
+        .header-group { display: flex; align-items: center; gap: 4px; }
+        .icon-btn { background: var(--btn-bg); border: none; color: var(--text-color); cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--border-radius); transition: background 0.1s; }
+        .icon-btn:hover, .icon-btn:active { background: var(--btn-hover); }
+        #status-indicator { font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 4px; background: rgba(128, 128, 128, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); display: flex; align-items: center; gap: 6px; }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background-color: currentColor; }
+
+        /* Editor Area */
+        #editor { flex: 1; overflow-y: auto; overflow-x: hidden; direction: ltr; padding-bottom: 90px; display: flex; flex-direction: column; }
+        .editor-row { display: flex; flex-direction: row; min-height: 40px; position: relative; border-bottom: 1px solid transparent; }
+        .editor-row:focus-within { background: var(--btn-hover); border-bottom-color: var(--border-color); }
+        .line-num { width: 44px; text-align: center; padding: 10px 4px; color: var(--line-num-color); font-size: 13px; user-select: none; border-right: 1px solid var(--border-color); background: var(--line-num-bg); flex-shrink: 0; }
+        .content { flex: 1; padding: 10px 14px; outline: none; font-size: var(--font-size); white-space: pre-wrap; word-break: break-word; min-height: 40px; line-height: 1.6; }
+        .content[dir="rtl"] { text-align: right; font-family: var(--font-family); color: var(--text-color); }
+        .content[dir="ltr"] { text-align: left; font-family: 'Courier New', Courier, monospace; color: var(--code-color); }
+        .actions { display: flex; align-items: flex-start; padding: 4px; }
+        .actions .icon-btn { width: 32px; height: 32px; opacity: 0; color: var(--accent-color); }
+        .editor-row:hover .actions .icon-btn, .editor-row:focus-within .actions .icon-btn { opacity: 1; }
+
+        /* Menus */
+        .menu-panel { position: absolute; top: 65px; background: var(--menu-bg); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--border-radius); display: none; flex-direction: column; gap: 12px; box-shadow: var(--shadow); z-index: 1000; min-width: 250px; direction: rtl; }
+        /* تغییر جهت منوها بر اساس جایگاه جدید دکمه‌ها */
+        .menu-panel#hamburger-menu, .menu-panel#plus-menu { right: 10px; left: auto; }
+        .menu-panel#search-menu { left: 10px; right: auto; }
+        
+        .menu-panel h3 { margin: 0; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); font-size: 15px; color: var(--accent-color); font-weight: 800; display: flex; align-items: center; gap: 6px; }
+        .menu-panel label { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--text-color); cursor: pointer; font-weight: 700; }
+        .menu-panel button { background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 10px 12px; border-radius: var(--border-radius); cursor: pointer; text-align: right; font-size: 14px; font-family: inherit; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .menu-panel button:hover { border-color: var(--accent-color); color: var(--accent-color); }
+        .menu-panel input[type="text"], .menu-panel input[type="number"], .menu-panel select { background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 10px; border-radius: var(--border-radius); outline: none; font-family: inherit; font-size: 14px; width: 100%; font-weight: 700; }
+        .menu-panel input:focus, .menu-panel select:focus { border-color: var(--accent-color); }
+        .contact-info { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color); font-size: 13px; font-weight: 700; }
+        .contact-info a { color: var(--accent-color); text-decoration: none; }
+
+        /* Floating Action Buttons - Right side */
+        .fab-container { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
+        .fab { width: 54px; height: 54px; border-radius: var(--border-radius); background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); cursor: pointer; }
+        .fab.primary { background: var(--accent-color); color: #000; border: none; }
+        .fab:hover { background: var(--btn-hover); }
+        .fab.primary:hover { background: var(--accent-hover); }
+        .fab svg { width: 24px; height: 24px; }
+
+        /* Modals */
+        .modal-overlay { position: fixed; inset: 0; background: var(--bg-color); z-index: 2000; display: none; flex-direction: column; }
+        .modal-header { height: 60px; background: var(--header-bg); color: var(--text-color); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid var(--border-color); }
+        .modal-header button { background: var(--btn-hover); border: 1px solid var(--border-color); color: var(--text-color); font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: inherit; padding: 8px 14px; border-radius: var(--border-radius); font-weight: 700; }
+        #preview-frame { flex: 1; border: none; width: 100%; background: #ffffff; }
+        #full-code-container { flex: 1; overflow: auto; padding: 15px; background: var(--line-num-bg); }
+        #full-code-area { width: 100%; min-height: 100%; background: transparent; color: var(--code-color); font-family: 'Courier New', Courier, monospace; font-size: 14px; border: none; outline: none; resize: none; direction: ltr; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <div id="splash">
+        <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><polyline points="16 13 8 13"></polyline><polyline points="16 17 8 17"></polyline><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <h2>سیستم کدباز</h2>
+        <button id="retry-btn" onclick="location.reload()">تلاش مجدد اتصال</button>
+    </div>
+
+    <div id="app" style="display: none; flex: 1; flex-direction: column;">
+        <header>
+            <div class="header-group">
+                <button class="icon-btn" onclick="toggleMenu('hamburger-menu', event)" title="تنظیمات">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <button class="icon-btn" onclick="toggleMenu('plus-menu', event)" title="فایل و استخراج">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+            </div>
+            
+            <div class="header-group" style="justify-content: center; flex: 1;">
+                <span id="status-indicator"><div class="status-dot"></div> آنلاین</span>
+            </div>
+            
+            <div class="header-group">
+                <button class="icon-btn" onclick="undo()" title="بازگشت">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" style="display:none"></path><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                </button>
+                <button class="icon-btn" onclick="redo()" title="جلو">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                </button>
+                <button class="icon-btn" onclick="toggleMenu('search-menu', event)" title="جستجو">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+            </div>
+        </header>
+
+        <div id="editor"></div>
+
+        <div class="fab-container">
+            <button class="fab" onclick="showFullCode()" title="مشاهده کل کد">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            </button>
+            <button class="fab primary" onclick="runPreview()" title="اجرای خروجی">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div id="hamburger-menu" class="menu-panel">
+        <h3>تنظیمات ویرایشگر</h3>
+        <label>اندازه فونت
+            <input type="range" id="font-size" min="12" max="24" value="15" onchange="changeFontSize(this.value)" style="width: 120px;">
+        </label>
+        <label>فونت کدها
+            <select onchange="changeFontFamily(this.value)" style="width: 120px;">
+                <option value="'Courier New', Courier, monospace">Courier</option>
+                <option value="monospace">Monospace</option>
+                <option value="'Tahoma', sans-serif">Tahoma</option>
+            </select>
+        </label>
+        <label>تم محیط
+            <select onchange="changeTheme(this.value)" style="width: 120px;">
+                <option value="dark">مشکی (پیش‌فرض)</option>
+                <option value="light">روشن</option>
+                <option value="dark-green">سبز تیره</option>
+                <option value="blue">آبی برنامه‌نویسی</option>
+                <option value="red">قرمز تیره</option>
+            </select>
+        </label>
+        <div class="contact-info">
+            ارتباط با ما: <br>
+            ایتا: <a href="https://eitaa.com/kod_baz" target="_blank">kod_baz@</a>
+        </div>
+    </div>
+
+    <div id="plus-menu" class="menu-panel">
+        <h3>مدیریت فایل</h3>
+        <button onclick="newProject()">پروژه جدید و خالی</button>
+        <button onclick="document.getElementById('file-import').click()">وارد کردن کد HTML</button>
+        <input type="file" id="file-import" style="display:none" accept=".html" onchange="importProject(event)">
+        <button onclick="saveProject()">دانلود فایل پروژه</button>
+    </div>
+
+    <div id="search-menu" class="menu-panel">
+        <h3>جستجو و ویرایش</h3>
+        <input type="number" id="goto-line" placeholder="پرش به خط...">
+        <button onclick="gotoLine()">برو به خط</button>
+        <input type="text" id="search-term" placeholder="یافتن عبارت..." style="margin-top: 8px;">
+        <input type="text" id="replace-term" placeholder="جایگزینی با...">
+        <button onclick="searchAndReplace()">جایگزین کن</button>
+    </div>
+
+    <div id="preview-modal" class="modal-overlay">
+        <div class="modal-header">
+            <span style="font-weight:bold;">خروجی مرورگر</span>
+            <button onclick="closeModal('preview-modal')">بستن خروجی</button>
+        </div>
+        <iframe id="preview-frame"></iframe>
+    </div>
+
+    <div id="full-code-modal" class="modal-overlay">
+        <div class="modal-header">
+            <span style="font-weight:bold;">سورس کد کامل</span>
+            <div style="display: flex; gap: 6px;">
+                <button onclick="copyFullCode()">کپی کل کد</button>
+                <button onclick="closeModal('full-code-modal')">بستن</button>
+            </div>
+        </div>
+        <div id="full-code-container">
+            <textarea id="full-code-area" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const OPENROUTER_API_KEY = "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"; 
+        
+        let linesData = [];
+        let undoStack = [];
+        let redoStack = [];
+
+        function generateId() {
+            return 'line_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function saveState() {
+            undoStack.push(JSON.parse(JSON.stringify(linesData)));
+            if (undoStack.length > 50) undoStack.shift();
+            redoStack = [];
+        }
+
+        function undo() {
+            if (undoStack.length === 0) return;
+            redoStack.push(JSON.parse(JSON.stringify(linesData)));
+            linesData = undoStack.pop();
+            renderEditor();
+        }
+
+        function redo() {
+            if (redoStack.length === 0) return;
+            undoStack.push(JSON.parse(JSON.stringify(linesData)));
+            linesData = redoStack.pop();
+            renderEditor();
+        }
+
+        function updateStatus(text, colorClass = '') {
+            const ind = document.getElementById('status-indicator');
+            ind.innerHTML = `<div class="status-dot"></div> ${text}`;
+            if (text === 'آنلاین') {
+                ind.style.color = '#10b981';
+                ind.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+            } else if (text === 'خطا') {
+                ind.style.color = '#ef4444';
+                ind.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+            } else {
+                ind.style.color = '#f59e0b';
+                ind.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+            }
+        }
+
+        function checkConnection() {
+            const splash = document.getElementById('splash');
+            if (navigator.onLine) {
+                splash.style.display = 'none';
+                document.getElementById('app').style.display = 'flex';
+                if (linesData.length === 0) newProject();
+            } else {
+                splash.style.display = 'flex';
+                document.getElementById('app').style.display = 'none';
+                document.getElementById('retry-btn').style.display = 'block';
+            }
+        }
+        window.addEventListener('online', checkConnection);
+        window.addEventListener('offline', checkConnection);
+
+        function buildCompleteDocument() {
+            let fullHTML = "<!DOCTYPE html>\n<html lang=\"fa\" dir=\"rtl\">\n<head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>پروژه نهایی</title>\n</head>\n<body>\n";
+            linesData.forEach(l => {
+                if (l.mode === 'code') {
+                    fullHTML += `    ${l.html}\n`;
+                } else if (l.text.trim()) {
+                    fullHTML += `    \n`;
+                }
+            });
+            fullHTML += "</body>\n</html>";
+            return fullHTML;
+        }
+
+        function newProject() {
+            saveState();
+            linesData = [{ id: generateId(), text: '', html: '', mode: 'text' }];
+            renderEditor(linesData[0].id);
+            closeAllMenus();
+        }
+
+        function renderEditor(focusId = null) {
+            const container = document.getElementById('editor');
+            container.innerHTML = '';
+            
+            linesData.forEach((line, index) => {
+                const row = document.createElement('div');
+                row.className = 'editor-row';
+                row.id = 'row-' + line.id;
+
+                const lineNum = document.createElement('div');
+                lineNum.className = 'line-num';
+                lineNum.innerText = index + 1;
+
+                const content = document.createElement('div');
+                content.className = 'content';
+                content.contentEditable = 'true';
+                content.setAttribute('spellcheck', 'false');
+
+                if (line.mode === 'code') {
+                    content.setAttribute('dir', 'ltr');
+                    content.innerText = (line.text ? `\n` : '') + line.html;
+                } else {
+                    content.setAttribute('dir', 'rtl');
+                    content.innerText = line.text;
+                }
+
+                content.addEventListener('input', () => {
+                    if (line.mode === 'code') {
+                        let val = content.innerText;
+                        let commentPrefix = `\n`;
+                        if (val.startsWith(commentPrefix)) {
+                            line.html = val.substring(commentPrefix.length);
+                        } else {
+                            line.html = val;
+                        }
+                    } else {
+                        line.text = content.innerText;
+                    }
+                });
+
+                content.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        saveState();
+                        
+                        const newId = generateId();
+                        const currentIndex = linesData.findIndex(l => l.id === line.id);
+                        linesData.splice(currentIndex + 1, 0, { id: newId, text: '', html: '', mode: 'text' });
+
+                        if (line.mode === 'text' && line.text.trim() && !line.html) {
+                            triggerAI(line.id);
+                        }
+
+                        renderEditor(newId);
+                    }
+                });
+
+                const actions = document.createElement('div');
+                actions.className = 'actions';
+
+                const toggleBtn = document.createElement('button');
+                toggleBtn.className = 'icon-btn';
+                toggleBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>';
+                toggleBtn.title = "کد / متن";
+                toggleBtn.onclick = () => {
+                    saveState();
+                    line.mode = line.mode === 'text' ? 'code' : 'text';
+                    updateRowDOM(line.id);
+                };
+
+                actions.appendChild(toggleBtn);
+                row.appendChild(lineNum);
+                row.appendChild(content);
+                row.appendChild(actions);
+                container.appendChild(row);
+
+                if (focusId === line.id) {
+                    setTimeout(() => {
+                        content.focus();
+                        const range = document.createRange();
+                        const sel = window.getSelection();
+                        range.selectNodeContents(content);
+                        range.collapse(false);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }, 0);
+                }
+            });
+        }
+
+        function updateRowDOM(lineId) {
+            const row = document.getElementById('row-' + lineId);
+            if (!row) return;
+            const line = linesData.find(l => l.id === lineId);
+            const content = row.querySelector('.content');
+            if (line.mode === 'code') {
+                content.setAttribute('dir', 'ltr');
+                content.innerText = (line.text ? `\n` : '') + line.html;
+            } else {
+                content.setAttribute('dir', 'rtl');
+                content.innerText = line.text;
+            }
+        }
+
+        async function triggerAI(lineId) {
+            const lineIndex = linesData.findIndex(l => l.id === lineId);
+            if (lineIndex === -1) return;
+            const line = linesData[lineIndex];
+
+            updateStatus('درحال پردازش...', 'warning');
+
+            let domMap = linesData.map((l, i) => `Line ${i+1} [ID: ${l.id}]: ${l.html ? l.html : '(Empty/Text)'}`).join('\n');
+
+            let prompt = `You are a strict code generator.
+Context:
+${domMap}
+
+USER COMMAND (Persian): "${line.text}"
+
+Rules:
+1. Output ONLY pure code (HTML/CSS/JS) for this line.
+2. NO markdown wrapping (\`\`\`html).
+3. If referring to previous elements, target their IDs.
+4. MUST include id="${line.id}" on the root element you generate.`;
+
+            try {
+                const res = await fetch("https://kodbaz.m46680279.workers.dev/", {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify({ 
+                        model: "openrouter/auto",
+                        messages: [{ role: "user", content: prompt }]
+                    })
+                });
+
+                if (!res.ok) throw new Error('API Error');
+                const data = await res.json();
+                
+                if (data.choices && data.choices.length > 0) {
+                    let html = data.choices[0].message.content;
+                    html = html.replace(/^```[a-z]*\n/im, '').replace(/```$/im, '').trim();
+
+                    const updatedIndex = linesData.findIndex(l => l.id === lineId);
+                    if (updatedIndex !== -1) {
+                        linesData[updatedIndex].html = html;
+                        linesData[updatedIndex].mode = 'code';
+                        updateRowDOM(lineId);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                updateStatus('خطا در پردازش', 'error');
+                alert('خطا در ارتباط با هوش مصنوعی. بررسی کلید API.');
+            } finally {
+                if(document.getElementById('status-indicator').innerText.includes('درحال')) {
+                    updateStatus('آنلاین');
+                }
+            }
+        }
+
+        function runPreview() {
+            const previewFrame = document.getElementById('preview-frame');
+            previewFrame.srcdoc = buildCompleteDocument();
+            document.getElementById('preview-modal').style.display = 'flex';
+        }
+
+        function showFullCode() {
+            const area = document.getElementById('full-code-area');
+            area.value = buildCompleteDocument();
+            document.getElementById('full-code-modal').style.display = 'flex';
+        }
+
+        function copyFullCode() {
+            const area = document.getElementById('full-code-area');
+            area.select();
+            document.execCommand('copy');
+            alert('سورس کد کپی شد.');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        async function saveProject() {
+            const fullHTML = buildCompleteDocument();
+            if (window.showSaveFilePicker) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: 'project.html',
+                        types: [{ description: 'HTML File', accept: {'text/html': ['.html']} }]
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(fullHTML);
+                    await writable.close();
+                } catch(e) { 
+                    if (e.name !== 'AbortError') fallbackDownload(fullHTML); 
+                }
+            } else {
+                fallbackDownload(fullHTML);
+            }
+            closeAllMenus();
+        }
+
+        function fallbackDownload(content) {
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'project.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importProject(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const text = event.target.result;
+                const bodyMatch = text.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+                const contentText = bodyMatch ? bodyMatch[1] : text;
+                const lines = contentText.split('\n').filter(l => l.trim() !== '');
+                
+                saveState();
+                if (lines.length === 0) {
+                    linesData = [{ id: generateId(), text: '', html: '', mode: 'text' }];
+                } else {
+                    linesData = lines.map(l => ({
+                        id: generateId(),
+                        text: '',
+                        html: l,
+                        mode: 'code'
+                    }));
+                }
+                renderEditor();
+                closeAllMenus();
+            };
+            reader.readAsText(file);
+        }
+
+        function gotoLine() {
+            const num = parseInt(document.getElementById('goto-line').value);
+            if (num > 0 && num <= linesData.length) {
+                const rowId = 'row-' + linesData[num - 1].id;
+                const row = document.getElementById(rowId);
+                if (row) {
+                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    row.querySelector('.content').focus();
+                }
+            }
+            closeAllMenus();
+        }
+
+        function searchAndReplace() {
+            const term = document.getElementById('search-term').value;
+            const rep = document.getElementById('replace-term').value;
+            if (!term) return;
+            saveState();
+            let replaced = false;
+            linesData.forEach(line => {
+                if (line.mode === 'text' && line.text.includes(term)) {
+                    line.text = line.text.split(term).join(rep);
+                    replaced = true;
+                } else if (line.mode === 'code' && line.html.includes(term)) {
+                    line.html = line.html.split(term).join(rep);
+                    replaced = true;
+                }
+            });
+            if (replaced) renderEditor();
+            closeAllMenus();
+        }
+
+        function toggleMenu(id, event) {
+            if (event) event.stopPropagation();
+            const menu = document.getElementById(id);
+            const isVisible = menu.style.display === 'flex';
+            closeAllMenus();
+            if (!isVisible) menu.style.display = 'flex';
+        }
+
+        function closeAllMenus() {
+            document.querySelectorAll('.menu-panel').forEach(m => m.style.display = 'none');
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.menu-panel') && !e.target.closest('.icon-btn')) {
+                closeAllMenus();
+            }
+        });
+
+        function changeFontSize(size) { document.documentElement.style.setProperty('--font-size', size + 'px'); }
+        function changeFontFamily(font) { document.documentElement.style.setProperty('--font-family', font); }
+        
+        function changeTheme(themeName) {
+            document.body.className = '';
+            if (themeName !== 'dark') {
+                document.body.classList.add(themeName + '-theme');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkConnection();
+        });
+    </script>
+</body>
+</html>
