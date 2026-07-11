@@ -311,15 +311,10 @@
 
         function checkConnection() {
             const splash = document.getElementById('splash');
-            if (navigator.onLine) {
-                splash.style.display = 'none';
-                document.getElementById('app').style.display = 'flex';
-                if (linesData.length === 0) newProject();
-            } else {
-                splash.style.display = 'flex';
-                document.getElementById('app').style.display = 'none';
-                document.getElementById('retry-btn').style.display = 'block';
-            }
+            splash.style.display = 'none';
+            document.getElementById('app').style.display = 'flex';
+            updateStatus(navigator.onLine ? 'آنلاین' : 'آفلاین');
+            if (linesData.length === 0) newProject();
         }
         window.addEventListener('online', checkConnection);
         window.addEventListener('offline', checkConnection);
@@ -651,4 +646,4 @@ Rules:
         });
     </script>
 </body>
-                    </html>
+                </html>
